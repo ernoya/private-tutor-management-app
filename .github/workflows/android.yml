@@ -17,7 +17,7 @@ jobs:
           cache: npm
 
       - run: npm install
-      - run: node generate-icons.js
+      - run: node generate-icons.cjs
       - run: npx tsc --noEmit
       - run: npx vite build
 
@@ -52,7 +52,7 @@ jobs:
       - run: npm install
 
       - name: Build web assets
-        run: node generate-icons.js && npx vite build
+        run: node generate-icons.cjs && npx vite build
 
       - name: Create Android project
         run: |

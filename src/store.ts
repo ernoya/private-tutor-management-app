@@ -268,7 +268,7 @@ export function updateGroup(
     name?: string;
     subject?: string;
     grade?: string | null;
-    monthlyFee?: string;
+    monthlyFee?: string | number;
     maxStudents?: number;
     notes?: string | null;
     isActive?: boolean;
@@ -282,7 +282,7 @@ export function updateGroup(
   if (data.name !== undefined) g.name = data.name;
   if (data.subject !== undefined) g.subject = data.subject;
   if (data.grade !== undefined) g.grade = data.grade;
-  if (data.monthlyFee !== undefined) g.monthlyFee = data.monthlyFee;
+  if (data.monthlyFee !== undefined) g.monthlyFee = data.monthlyFee.toString();
   if (data.maxStudents !== undefined) g.maxStudents = data.maxStudents;
   if (data.notes !== undefined) g.notes = data.notes;
   if (data.isActive !== undefined) g.isActive = data.isActive;

@@ -6,10 +6,36 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm install
+      - run: node generate-icons.js
+      - run: npx tsc --noEmit
+      - run: npx vite build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist
+
+  apk:
+    needs: build-web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
 
       - name: Setup Java 17
         uses: actions/setup-java@v4
@@ -23,16 +49,23 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Create project structure
+      - run: npm install
+
+      - name: Build web assets
+        run: node generate-icons.js && npx vite build
+
+      - name: Create Android project
         run: |
           mkdir -p app/src/main/java/com/madrasti/tutor
           mkdir -p app/src/main/res/values
           mkdir -p app/src/main/res/mipmap-xxxhdpi
+          mkdir -p app/src/main/assets/www
 
-      - name: Generate icon
-        run: |
-          node generate-icons.js
-          cp public/icon-512.png app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+      - name: Copy web assets to Android
+        run: cp -r dist/* app/src/main/assets/www/
+
+      - name: Copy icon
+        run: cp public/icon-512.png app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 
       - name: Write AndroidManifest.xml
         run: |
@@ -99,7 +132,7 @@ jobs:
                   settings.setLoadWithOverviewMode(true);
                   webView.setWebViewClient(new WebViewClient());
                   webView.setWebChromeClient(new WebChromeClient());
-                  webView.loadUrl("https://private-tutor-management-app.vercel.app");
+                  webView.loadUrl("file:///android_asset/www/index.html");
               }
 
               @Override

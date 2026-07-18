@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+data.json
+.env
+.env.local
+.env*.local
+.vercel
+public/icon-192.png
+public/icon-512.png

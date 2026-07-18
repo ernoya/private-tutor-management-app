@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Android APK
 
 on:
   workflow_dispatch:
@@ -6,33 +6,7 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    outputs:
-      url: ${{ steps.deploy.outputs.url }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm install
-      - run: node generate-icons.js
-      - run: npm run build
-
-      - name: Deploy to Vercel
-        id: deploy
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: --prod
-
-  apk:
-    needs: deploy
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,7 +23,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Create Android project structure
+      - name: Create project structure
         run: |
           mkdir -p app/src/main/java/com/madrasti/tutor
           mkdir -p app/src/main/res/values
@@ -119,6 +93,7 @@ jobs:
                   WebSettings settings = webView.getSettings();
                   settings.setJavaScriptEnabled(true);
                   settings.setDomStorageEnabled(true);
+                  settings.setAllowFileAccess(true);
                   settings.setCacheMode(WebSettings.LOAD_DEFAULT);
                   settings.setUseWideViewPort(true);
                   settings.setLoadWithOverviewMode(true);
@@ -206,10 +181,10 @@ jobs:
         run: gradle wrapper --gradle-version 8.5
 
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: madrasti-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/release/*.apk

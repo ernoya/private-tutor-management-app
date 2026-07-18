@@ -1,0 +1,21 @@
+{
+  "packageId": "com.madrasti.tutor",
+  "host": "private-tutor-management-app.vercel.app",
+  "name": "مدرستي",
+  "shortName": "مدرستي",
+  "startUrl": "/",
+  "themeColor": "#6366f1",
+  "backgroundColor": "#f0f4f8",
+  "signingKey": {
+    "path": "keystore.jks",
+    "alias": "madrasti",
+    "password": "madrasti123"
+  },
+  "iconPath": "public/icon-512.png",
+  "maskableIconPath": "public/icon-512.png",
+  "useLive": true,
+  "instantAppEnabled": false,
+  "fallBackChoice": "web",
+  "appVersionCode": 1,
+  "appVersionName": "1.0.0"
+}

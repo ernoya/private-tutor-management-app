@@ -206,6 +206,7 @@ export function getGroupById(id: number) {
   if (!g) return null;
   return {
     ...g,
+    studentCount: s.enrollments.filter((e) => e.groupId === id).length,
     schedules: s.groupSchedules.filter((sc) => sc.groupId === id),
     students: s.enrollments
       .filter((e) => e.groupId === id)
@@ -227,10 +228,10 @@ export function getGroupById(id: number) {
 export function addGroup(data: {
   name: string;
   subject: string;
-  grade?: string;
+  grade?: string | null;
   monthlyFee?: number;
   maxStudents?: number;
-  notes?: string;
+  notes?: string | null;
   schedules?: { dayOfWeek: string; startTime: string; endTime: string }[];
 }): Group {
   const s = load();
@@ -266,10 +267,10 @@ export function updateGroup(
   data: {
     name?: string;
     subject?: string;
-    grade?: string;
+    grade?: string | null;
     monthlyFee?: string;
     maxStudents?: number;
-    notes?: string;
+    notes?: string | null;
     isActive?: boolean;
     schedules?: { dayOfWeek: string; startTime: string; endTime: string }[];
   }
